@@ -1,0 +1,33 @@
+services:
+  # Model Service
+  - type: web
+    name: crop-disease-model-service
+    runtime: python
+    rootDir: model-service
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.11
+
+  # Backend Service
+  - type: web
+    name: crop-disease-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.11
+      - key: MODEL_SERVICE_URL
+        value: https://crop-disease-model-service.onrender.com
+      - key: DATABASE_URL
+        fromDatabase:
+          name: crop_disease_db
+          property: connectionString
+
+databases:
+  - name: crop_disease_db
+    databaseName: crop_disease_db
+    user: crop_admin
