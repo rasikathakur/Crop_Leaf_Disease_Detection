@@ -7,8 +7,8 @@ from datetime import datetime, timezone
 import os
 import time
 import re
-from db.database import get_db, LeafPrediction
-from preprocessing.image_processor import ImagePreprocessor
+from app.db.database import get_db, LeafPrediction
+from app.preprocessing.image_processor import ImagePreprocessor
 import tensorflow as tf
 from tensorflow import keras
 import numpy as np
