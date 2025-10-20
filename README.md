@@ -13,7 +13,7 @@ This project provides an end-to-end system for classifying crop leaf health usin
 
 ## 2. System Architecture
 
-![System Architecture Diagram](./docs/images/architecture-diagram.png)
+![System Architecture Diagram](./assets/system_architecture.png)
 
 The system consists of three main components:
 - **Frontend**: Streamlit-based user interface for image upload and results visualization
@@ -134,48 +134,40 @@ Implemented in `backend/app/main.py` and `backend/app/api/endpoints.py`:
 ## 6. Results
 
 ### 6.1 Model Accuracy and Loss Curves
-![Streamlit Upload Interface](./docs/images/streamlit-upload.png)
+![Accuracy Loss Curves](./assets/training_history.png)
 
-### 6.1. Streamlit Frontend
+### 6.2. Streamlit Frontend
 
-#### Upload and Prediction Interface
-![Streamlit Upload Interface](./docs/images/streamlit-upload.png)
+#### Upload and Prediction Interface - Healthy Prediction
+![Streamlit Upload Interface](./assets/healthy_leaf_prediction.png)
+
+#### Upload and Prediction Interface - Early Disease Prediction
+![Streamlit Upload Interface](./assets/early_disease_leaf_prediction.png)
+
+#### Upload and Prediction Interface - Severe Disease Prediction
+![Streamlit Upload Interface](./assets/severe_disease_leaf_prediction.png)
 
 *Users can upload crop leaf images and receive instant disease classification results*
 
 #### Prediction Results Display
-![Streamlit Prediction Results](./docs/images/streamlit-results.png)
+![Streamlit Prediction Results](./assets/get_results.png)
 
 *Detailed prediction showing crop type, disease status, and confidence score*
 
-#### History and Analytics Dashboard
-![Streamlit History Dashboard](./docs/images/streamlit-history.png)
-
-*View past predictions with filtering options and summary statistics*
-
-### 6.2. FastAPI Backend Documentation
-
-#### API Documentation Homepage
-![FastAPI Docs Homepage](./docs/images/fastapi-docs-home.png)
-
-*Interactive API documentation powered by Swagger UI*
+### 6.3. FastAPI Backend Results
 
 #### Upload Leaf Image Endpoint
-![FastAPI Upload Endpoint](./docs/images/fastapi-upload-endpoint.png)
+![FastAPI Docs upload leaf image endpoint](./assets/backend_upload_leaf_image_endpoint.png)
 
+*Interactive API documentation powered by Swagger UI*
 *POST `/upload_leaf_image` endpoint with request/response schemas*
 
+
 #### Get Results Endpoint
-![FastAPI Get Results Endpoint](./docs/images/fastapi-get-results-endpoint.png)
+![FastAPI Get Results Endpoint](./assets/backend_get_results_endpoint.png)
 
 *GET `/get_results` endpoint with query parameters and filtering options*
 
-#### Model Service API
-![Model Service Docs](./docs/images/model-service-docs.png)
-
-*Model inference service API documentation*
-
----
 
 ## 7. Setup Instructions
 
