@@ -2,7 +2,11 @@ from fastapi import FastAPI, UploadFile, File, HTTPException
 from tensorflow import keras
 import numpy as np
 import os
+from pydantic import BaseModel
 
+class PredictionRequest(BaseModel):
+    image_array: list
+    
 # Load model
 MODEL_PATH = os.path.join(os.path.dirname(__file__), "../models/crop_disease_model.keras")
 model = keras.models.load_model(MODEL_PATH)
@@ -45,7 +49,8 @@ CLASS_TO_SEVERITY = {
 }
 
 @app.post("/predict")
-async def predict(image_array: list):
+async def predict(request: PredictionRequest):
+    img = np.array(request.image_array, dtype=np.float32)
     """Expects preprocessed image array [1, 224, 224, 3]"""
     try:
         img = np.array(image_array, dtype=np.float32)
