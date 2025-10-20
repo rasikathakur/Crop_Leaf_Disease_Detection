@@ -50,10 +50,9 @@ CLASS_TO_SEVERITY = {
 
 @app.post("/predict")
 async def predict(request: PredictionRequest):
-    img = np.array(request.image_array, dtype=np.float32)
     """Expects preprocessed image array [1, 224, 224, 3]"""
     try:
-        img = np.array(image_array, dtype=np.float32)
+        img = np.array(request.image_array, dtype=np.float32)
         preds = model.predict(img)
         class_idx = int(np.argmax(preds[0]))
         confidence = float(preds[0][class_idx])
