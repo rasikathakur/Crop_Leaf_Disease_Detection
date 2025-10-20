@@ -11,7 +11,18 @@ This project provides an end-to-end system for classifying crop leaf health usin
 
 ---
 
-## 2. Project Structure
+## 2. System Architecture
+
+![System Architecture Diagram](./docs/images/architecture-diagram.png)
+
+The system consists of three main components:
+- **Frontend**: Streamlit-based user interface for image upload and results visualization
+- **Backend API**: FastAPI service handling business logic, preprocessing, and database operations
+- **Model Service**: Dedicated FastAPI service for deep learning inference
+
+---
+
+## 3. Project Structure
 
 ```
 /
@@ -35,12 +46,14 @@ This project provides an end-to-end system for classifying crop leaf health usin
 ├─ ml_training/               # (not deployed) model training scripts
 │
 ├─ infra/
+├─ docs/
+│  └─ images/                 # Screenshots and diagrams
 └─ README.md
 ```
 
 ---
 
-## 3. Database Schema
+## 4. Database Schema
 
 ### Predictions Table
 
@@ -57,9 +70,9 @@ The core table for storing prediction results:
 
 ---
 
-## 4. Core Architecture
+## 5. Core Architecture
 
-### 4.1. Image Preprocessing
+### 5.1. Image Preprocessing
 
 Implemented in `backend/app/preprocessing/image_processor.py` using OpenCV and Pillow:
 
@@ -68,14 +81,14 @@ Implemented in `backend/app/preprocessing/image_processor.py` using OpenCV and P
 - **Segmentation**: Largest contour selected, image cropped and resized (224x224)
 - **Exposed via**: Called as a utility in `/upload_leaf_image` endpoint
 
-### 4.2. Model Service (DL Inference)
+### 5.2. Model Service (DL Inference)
 
 - FastAPI service (`model-service/app/main.py`)
 - Loads pre-trained Keras `.keras` model (MobileNet, outputs 3-class)
 - Accepts preprocessed arrays, returns predicted class and confidence
 - Maps fine-grained class (from model) into: `Healthy`, `Early_Disease`, `Severe_Disease`
 
-### 4.3. Backend API
+### 5.3. Backend API
 
 Implemented in `backend/app/main.py` and `backend/app/api/endpoints.py`:
 
@@ -110,7 +123,7 @@ Implemented in `backend/app/main.py` and `backend/app/api/endpoints.py`:
 - Lists recent/past predictions (paginated)
 - Summary stats: total predictions, class distribution
 
-### 4.4. Frontend
+### 5.4. Frontend
 
 - Implemented in Streamlit (`frontend/streamlit_app.py`)
 - Calls backend `/upload_leaf_image` for new predictions
@@ -118,7 +131,53 @@ Implemented in `backend/app/main.py` and `backend/app/api/endpoints.py`:
 
 ---
 
-## 5. Setup Instructions
+## 6. Results
+
+### 6.1 Model Accuracy and Loss Curves
+![Streamlit Upload Interface](./docs/images/streamlit-upload.png)
+
+### 6.1. Streamlit Frontend
+
+#### Upload and Prediction Interface
+![Streamlit Upload Interface](./docs/images/streamlit-upload.png)
+
+*Users can upload crop leaf images and receive instant disease classification results*
+
+#### Prediction Results Display
+![Streamlit Prediction Results](./docs/images/streamlit-results.png)
+
+*Detailed prediction showing crop type, disease status, and confidence score*
+
+#### History and Analytics Dashboard
+![Streamlit History Dashboard](./docs/images/streamlit-history.png)
+
+*View past predictions with filtering options and summary statistics*
+
+### 6.2. FastAPI Backend Documentation
+
+#### API Documentation Homepage
+![FastAPI Docs Homepage](./docs/images/fastapi-docs-home.png)
+
+*Interactive API documentation powered by Swagger UI*
+
+#### Upload Leaf Image Endpoint
+![FastAPI Upload Endpoint](./docs/images/fastapi-upload-endpoint.png)
+
+*POST `/upload_leaf_image` endpoint with request/response schemas*
+
+#### Get Results Endpoint
+![FastAPI Get Results Endpoint](./docs/images/fastapi-get-results-endpoint.png)
+
+*GET `/get_results` endpoint with query parameters and filtering options*
+
+#### Model Service API
+![Model Service Docs](./docs/images/model-service-docs.png)
+
+*Model inference service API documentation*
+
+---
+
+## 7. Setup Instructions
 
 ### Clone Repository
 
@@ -146,7 +205,7 @@ Set environment variables:
 
 ```bash
 export MODEL_SERVICE_URL=http://localhost:8001
-export DATABASE_URL=sqlite:///./test.db
+export DATABASE_URL=postgresql://username:password@localhost:5432/db_name
 ```
 
 Run server:
@@ -171,7 +230,7 @@ streamlit run streamlit_app.py
 
 ---
 
-## 6. Key Points
+## 8. Key Points
 
 - **Image preprocessing is critical for accuracy** - proper color correction and background removal significantly improve model performance
 - **Separated model service** allows for easy scaling, updating, or moving to GPU infrastructure if needed
@@ -180,7 +239,8 @@ streamlit run streamlit_app.py
 
 ---
 
-## 7. Deployed Links
+## 9. Deployed Links
+
 - **Model Service**: [https://crop-leaf-disease-detection.onrender.com/docs](https://crop-leaf-disease-detection.onrender.com/docs#/)
 - **Backend API**: [https://crop-leaf-disease-detection-1.onrender.com/docs](https://crop-leaf-disease-detection-1.onrender.com/docs#/)
 - **Frontend**: [https://crop-leaf-disease-detection-2.onrender.com](https://crop-leaf-disease-detection-2.onrender.com)
