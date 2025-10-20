@@ -7,14 +7,14 @@ from datetime import datetime, timezone
 import os
 import time
 import re
-from app.db.database import get_db, LeafPrediction
-from app.preprocessing.image_processor import ImagePreprocessor
+from db.database import get_db, LeafPrediction
+from preprocessing.image_processor import ImagePreprocessor
 import tensorflow as tf
 from tensorflow import keras
 import numpy as np
 import requests
 
-MODEL_SERVICE_URL = os.getenv("MODEL_SERVICE_URL")
+MODEL_SERVICE_URL = os.getenv("MODEL_SERVICE_URL", "http://localhost:3000")
 preprocessor = ImagePreprocessor(target_size=(224, 224))
 # Rate Limiting
 RATE_LIMIT = 10  # each IP can have 10 requests per minute max
@@ -178,17 +178,53 @@ async def upload_leaf_image(
             json={"image_array": processed_img.tolist()},
             timeout=30
         )
+    except requests.RequestException as e:
+        raise HTTPException(status_code=502, detail=f"Model service unreachable: {e}")
+
+    if response.status_code != 200:
+        try:
+            err_detail = response.json().get('detail', response.text)
+        except:
+            err_detail = response.text
+        raise HTTPException(
+            status_code=502,
+            detail=f"Model service error (HTTP {response.status_code}): {err_detail}"
+        )
+
+    try:
         result = response.json()
+    except ValueError as e:
+        raise HTTPException(status_code=502, detail=f"Invalid JSON from model service: {e}")
+
+    print(f"[Backend] Model service response: {result}")  # Debug logging
+
+    # Extract disease status and confidence, with fallbacks for different response formats
+    try:
+        disease_status = result.get("disease_status")
+        if disease_status is None and "disease_name" in result:
+            # Use CLASS_TO_SEVERITY mapping if available
+            disease_name = result["disease_name"]
+            disease_status = CLASS_TO_SEVERITY.get(disease_name, "Unknown")
+        
+        confidence = result.get("confidence")
+        if confidence is None:
+            confidence = result.get("confidence_score", 0.0)
+
+        if disease_status is None or confidence is None:
+            raise KeyError("Missing required fields")
+
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Model service error: {e}")
-    
+        raise HTTPException(
+            status_code=502,
+            detail=f"Invalid response format from model service. Fields missing: {str(e)}. Got: {result}"
+        )
 
     crop_type = infer_crop_type(file.filename)
     # Store in DB
     prediction = LeafPrediction(
         crop_type=crop_type,
-        disease_status=result["disease_status"],
-        confidence_score=result["confidence"],
+        disease_status=disease_status,
+        confidence_score=float(confidence),  # Ensure float type
         timestamp=datetime.now(timezone.utc),
         image_filename=file.filename
     )
@@ -199,9 +235,9 @@ async def upload_leaf_image(
     return {
         "leaf_id": prediction.leaf_id,
         "crop_type": crop_type,
-        "disease_status": result["disease_status"],
-        "confidence_score": ["confidence"],
-        "timestamp": prediction.timestamp,
+        "disease_status": prediction.disease_status,
+        "confidence_score": prediction.confidence_score,
+        "timestamp": prediction.timestamp.isoformat() if prediction.timestamp else None,
         "image_filename": prediction.image_filename
     }
 
