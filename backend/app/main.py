@@ -2,8 +2,8 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-from db.database import init_db, test_connection
-from api.endpoints import router
+from app.db.database import init_db, test_connection
+from app.api.endpoints import router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
