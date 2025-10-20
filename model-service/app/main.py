@@ -50,7 +50,6 @@ CLASS_TO_SEVERITY = {
 
 @app.post("/predict")
 async def predict(request: PredictionRequest):
-    """Expects preprocessed image array [1, 224, 224, 3]"""
     try:
         img = np.array(request.image_array, dtype=np.float32)
         preds = model.predict(img)
@@ -63,7 +62,6 @@ async def predict(request: PredictionRequest):
         else:
             disease_name = "Unknown"
             disease_status = "Uncertain"
-        
         return {
             "disease_name": disease_name,
             "disease_status": disease_status,
