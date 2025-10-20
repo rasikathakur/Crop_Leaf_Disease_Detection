@@ -3,8 +3,10 @@ import requests
 from PIL import Image
 import io
 from datetime import datetime
+import os
 
-API_URL = "http://localhost:8000"  
+
+API_URL = os.getenv("API_URL","http://localhost:8000")  
 
 st.set_page_config(
     page_title="Crop Leaf Disease Detection",
@@ -97,5 +99,13 @@ with st.expander("Show Prediction History", expanded=True):
         except Exception as e:
             st.error(f"Failed to connect to API: {e}")
         st.session_state["refresh"] = False
+
+st.divider()
+
+st.header("3️⃣ Model Performance")
+try:
+    st.image("training_history.png", caption="Model Accuracy and Loss During Training", use_column_width=True)
+except Exception as e:
+    st.warning("Training history plot not found. Place training_history.png in the frontend directory to view model training metrics.")
 
 st.divider()
