@@ -128,7 +128,7 @@ git clone https://github.com/rasikathakur/Crop_Leaf_Disease_Detection
 
 ### Installation
 
-(Optional) Create separate environments for each service (model-service, backend, frontend).
+Create separate environments for each service (model-service, backend, frontend).
 
 Install dependencies per `requirements.txt` in each service's folder.
 
@@ -181,12 +181,9 @@ streamlit run streamlit_app.py
 ---
 
 ## 7. Deployed Links
-
-- **Frontend**: [https://crop-leaf-disease-detection-2.onrender.com](https://crop-leaf-disease-detection-2.onrender.com)
-- **Backend API**: [https://crop-leaf-disease-detection-1.onrender.com/docs](https://crop-leaf-disease-detection-1.onrender.com/docs#/)
 - **Model Service**: [https://crop-leaf-disease-detection.onrender.com/docs](https://crop-leaf-disease-detection.onrender.com/docs#/)
+- **Backend API**: [https://crop-leaf-disease-detection-1.onrender.com/docs](https://crop-leaf-disease-detection-1.onrender.com/docs#/)
+- **Frontend**: [https://crop-leaf-disease-detection-2.onrender.com](https://crop-leaf-disease-detection-2.onrender.com)
 - **Source Code**: [https://github.com/rasikathakur/Crop_Leaf_Disease_Detection](https://github.com/rasikathakur/Crop_Leaf_Disease_Detection)
 
 ---
-
-*Documentation generated for Crop Leaf Disease Detection System*
